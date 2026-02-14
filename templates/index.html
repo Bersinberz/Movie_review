@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMDB Sentiment Analyzer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --accent-pos: #00ff88;
+            --accent-neg: #ff4d4d;
+            --text-color: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-color);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Main Container */
+        .container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 50px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            text-align: center;
+            animation: floatUp 1s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+            z-index: 1;
+        }
+
+        @keyframes floatUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        p.subtitle {
+            margin-bottom: 30px;
+            opacity: 0.8;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 16px;
+            padding: 20px;
+            outline: none;
+            resize: none;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+            font-style: italic;
+        }
+
+        textarea:focus {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 15px rgba(37, 117, 252, 0.5);
+        }
+
+        button.analyze-btn {
+            margin-top: 30px;
+            padding: 15px 50px;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: white;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button.analyze-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(37, 117, 252, 0.6);
+        }
+
+        /* --- POPUP MODAL STYLES --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85); /* Darker backdrop */
+            backdrop-filter: blur(8px);
+            z-index: 9999; /* Sit on top of everything */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background: rgba(20, 20, 30, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            position: relative;
+            transform: scale(0.7);
+            animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Close Button (X) */
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: color 0.3s;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .close-btn:hover {
+            color: white;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes zoomIn {
+            to { transform: scale(1); }
+        }
+
+        .prediction-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+        }
+
+        .confidence-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.7;
+            margin-bottom: 25px;
+            display: block;
+        }
+
+        .modal-footer-btn {
+            padding: 10px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: transparent;
+            color: white;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .modal-footer-btn:hover {
+            background: white;
+            color: black;
+        }
+
+        /* Dynamic Colors */
+        .positive {
+            color: var(--accent-pos);
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+        }
+
+        .negative {
+            color: var(--accent-neg);
+            text-shadow: 0 0 20px rgba(255, 77, 77, 0.6);
+        }
+
+        /* Decorative Background Circles */
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: white;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        .c1 { width: 200px; height: 200px; top: -50px; left: -50px; animation: float 10s infinite ease-in-out; }
+        .c2 { width: 300px; height: 300px; bottom: -100px; right: -50px; animation: float 12s infinite ease-in-out reverse; }
+        
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+            100% { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="circle c1"></div>
+    <div class="circle c2"></div>
+
+    <div class="container">
+        <h1>Movie Critic AI</h1>
+        <p class="subtitle">Enter your review to analyze sentiment</p>
+
+        <form action="/predict" method="post">
+            <textarea name="review" placeholder="Type your review here..."></textarea>
+            <br>
+            <button type="submit" class="analyze-btn">ANALYZE</button>
+        </form>
+    </div>
+
+    {% if prediction %}
+        <div class="modal-overlay" id="resultModal">
+            <div class="modal-content">
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+                
+                <h2 class="prediction-title {{ color_class }}">
+                    {{ prediction }}
+                </h2>
+                
+                <span class="confidence-label">
+                    Confidence Score: {{ confidence }}
+                </span>
+
+                <button class="modal-footer-btn" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    {% endif %}
+
+    <script>
+        function closeModal() {
+            const modal = document.getElementById('resultModal');
+            if (modal) {
+                modal.style.opacity = '0';
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300); // Wait for fade out
+            }
+        }
+    </script>
+
+</body>
+</html>
