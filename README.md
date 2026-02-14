@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🎬 IMDB Sentiment Analyzer
+# IMDB Sentiment Analyzer
 ### BERT + FastAPI + PyTorch
 
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=for-the-badge&logo=python&logoColor=white)
@@ -15,8 +15,6 @@
 <span style="color:green">Positive</span> or <span style="color:red">Negative</span>  
 using a fine-tuned BERT transformer model.**
 
-[View Demo](#-demo) • [Installation](#-setup-instructions) • [Model Specs](#-model-information)
-
 </div>
 
 ---
@@ -29,12 +27,6 @@ This project demonstrates an **end-to-end Machine Learning pipeline**, moving fr
 - 🏎️ **GPU Acceleration:** Training optimized with CUDA on NVIDIA hardware.
 - 🌐 **Modern Backend:** High-performance inference API using **FastAPI**.
 - 🎨 **Dynamic Frontend:** Server-side rendering with **Jinja2 Templates**.
-
----
-
-## 📺 Demo
-
-![App Screenshot](https://via.placeholder.com/800x400.png?text=Place+Your+App+GIF+or+Screenshot+Here)
 
 ---
 
