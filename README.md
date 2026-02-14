@@ -160,24 +160,4 @@ The cinematography was breathtaking, but the plot felt rushed towards the end. S
 }
 ```
 
----
-
-# 🔥 Roadmap
-
-- [ ] Add REST JSON API endpoint (`/api/predict`)
-- [ ] Probability visualization chart (Chart.js)
-- [ ] Dockerize the application
-- [ ] Deploy on Render / AWS
-- [ ] Push model to Hugging Face Hub
-
----
-
-<div align="center">
-
-## 👨‍💻 Author
-
-**Bersin**
-
-Built with ❤️ using PyTorch & FastAPI
-
 </div>
