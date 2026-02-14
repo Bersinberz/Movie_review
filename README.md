@@ -36,7 +36,7 @@ This project demonstrates:
 ## 📁 Project Structure
 
 ```
-project/
+Movie_review/
 │
 ├── main.py
 ├── prepare_data.py
@@ -60,8 +60,8 @@ project/
 ## 1️⃣ Clone the Repository
 
 ```bash
-git clone <your-repo-link>
-cd <project-folder>
+git clone https://github.com/Bersinberz/Movie_review.git
+cd Movie_review
 ```
 
 ---
